@@ -1,0 +1,248 @@
+Main.cpp
+--------------------------------------------------
+#include"String.h"
+
+int main()
+{
+
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	
+	int countid = 1;
+
+	int countpeople = 3;
+
+	int counhouse = 1;
+
+	int countflat = 3;
+
+	People* p = new People[countpeople]
+	{
+		{countid++, "Батанов Игорь Иванович"},
+		{countid++, "Михалевич Александр Александрович"},
+		{countid++, "Сенькина Юлия Викторовна"}
+	};
+	
+	cout << endl;
+	cout << "-------------------";
+	cout << endl;
+
+	Flat f;
+
+	f.initFlat(countflat, p);
+
+	House h;
+	h.init(20, countflat, &f);
+	
+	h.ShowHouse(countflat, countpeople, p);
+
+	cout << endl;
+
+	system("pause");
+}
+
+String.h
+----------------------------------------------------------
+#pragma once
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <iostream>
+#include <Windows.h>
+#include <string.h>
+
+
+using namespace std;
+
+class People
+{
+private:
+
+	int countid;
+	char* Fio;
+
+public:
+	People();
+	People(int _countid, const char* _fio);
+
+	
+	People(const People& obj);
+
+	
+	~People();
+
+	inline void ShowPeople(int countpeople, People* p);
+
+};
+
+class Flat
+{
+private:
+
+	int* flat_number;
+	People* PeopleFlat;
+
+public:
+
+	Flat();
+	Flat(int _f, int countflat, People* p);
+
+	void initFlat(int countflat, People* p);
+
+	void ShowFlat(int countflat, int countpeople, People* p);
+
+	Flat(const Flat& obj);
+
+	~Flat();
+
+};
+
+class House
+{
+private:
+
+	int house_number;
+	Flat* HouseFlat;
+
+public:
+	
+	House();
+	House(int _h, Flat *_f);
+
+	void init(int _h, int countflat, Flat* f);
+	void ShowHouse(int countflat, int countpeople, People* p);
+
+	House(const House& obj);
+
+	~House();
+};
+
+String.cpp
+
+----------------------------------------------------------------
+
+#include"String.h"
+
+People::People()
+{
+	countid = 0;
+	Fio = new char[7]{ "NoName" };
+}
+
+People::People(int _countid, const char* _fio)
+{
+	int count_fio;
+	count_fio = strlen(_fio);
+
+	Fio = new char[count_fio + 1];
+
+	countid = _countid;
+	strcpy(Fio, _fio);
+}
+
+People::People(const People& obj)
+{
+	int count_fio, countid;
+	count_fio = strlen(obj.Fio);
+
+	countid = obj.countid;
+
+	Fio = new char[count_fio + 1];
+	strcpy(Fio, obj.Fio);
+}
+
+People::~People()
+{
+	delete[]Fio;
+}
+
+inline void People::ShowPeople(int countpeople, People* p)
+{	
+	
+	cout << "ФИО жильцов: \n";
+
+	for (size_t i = 0; i < countpeople; i++)
+	{
+		cout << p[i].Fio << endl;
+	}
+
+}
+
+Flat::Flat()
+{
+	flat_number = 0;
+	PeopleFlat = 0;
+}
+
+Flat::Flat(int _f, int countflat, People* p)
+{
+	flat_number[countflat] = _f;
+	PeopleFlat = p;
+}
+
+void Flat::initFlat(int countflat, People* p)
+{
+	flat_number = new int[countflat] { 7, 2, 3 };	
+	PeopleFlat = p;	
+}
+
+void Flat::ShowFlat(int countflat, int countpeople, People* p)
+{
+	cout << "Номера жилых квартир: ";
+	for (size_t i = 0; i < countflat; i++)
+	{
+		cout << Flat::flat_number[i];
+		if (i != countflat - 1)
+			cout << ", ";
+		else
+			cout << ".";
+	}
+	cout << endl;
+	PeopleFlat->ShowPeople(countpeople, p);
+}
+
+Flat::Flat(const Flat& obj)
+{
+	flat_number = obj.flat_number;
+	PeopleFlat = obj.PeopleFlat;
+}
+
+Flat::~Flat()
+{
+	delete[]flat_number;
+	delete[]PeopleFlat;
+}
+
+House::House()
+{
+	house_number = 0;
+	HouseFlat = 0;
+}
+
+House::House(int _h, Flat *_f)
+{
+	house_number = _h;
+	HouseFlat = _f;
+}
+
+void House::init(int _h, int countflat, Flat* f)
+{
+	this->house_number = _h;	
+	HouseFlat = f;
+}
+
+void House::ShowHouse(int countflat, int countpeople, People* p)
+{
+	cout << "Номер дома: " << house_number << endl;
+	HouseFlat->ShowFlat(countflat, countpeople, p);	
+}
+
+House::House(const House& obj)
+{
+	house_number = obj.house_number;
+	HouseFlat = obj.HouseFlat;
+}
+
+House::~House()
+{
+	delete[] HouseFlat;
+}
